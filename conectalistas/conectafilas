@@ -1,0 +1,81 @@
+function listas(conection, listado, nombre) //Función para crear un objeto que permita controlar las listas
+	{
+		/*
+			Los dos primeros parámetros que recibe son objetos JSON.
+			
+			conection define la relación entre listas, mediante el formato:
+			
+			{"lista que acciona" : "lista víctima"}
+			
+			listado contiene la información de todas las listas mediante el formato:
+			
+			{
+				"id de la lista": {
+					"id-id al que pertenece" : "Valor a mostrar"
+				} 
+			
+			}
+			
+			La única lista que no debe ser incluida en listado es la primera. Esta debe ser definida manualmente.
+			
+			Por ultimo, nombre, indica el nombre de la variable que contiene el objeto (NO ES MENTIRA, el nombre de la variable, esto mientras se consigue una forma de hacer que un objeto imprima su nombre).
+		*/
+		this.conection = conection;
+		this.cambioListas = cambioListas;
+		this.listado = listado;
+		this.claves = Object.keys(this.conection); //obtiene las claves del objeto conection.
+		var limite = this.claves.length;
+		
+		for (i=0;i<limite;i++) //Itera el arreglo conection.
+		{
+			$('#'+this.claves[i]).attr("onChange", "cambioListas("+nombre+".conection, "+nombre+".listado, "+nombre+".claves["+i+"])");
+		}
+	}
+	
+	function cambioListas(conection, listado, clave)
+	{
+		var victima = '#'+conection[clave];
+				
+				$(victima).html('');
+				var lista = Object.keys(listado[conection[clave]]); //Obtiene los elementos de la lista victima.
+				
+				for (j=0;j<lista.length;j++) //Itera en listado.
+				{
+					var numeros = lista[j].split('-'); //Divide la clave según el -, primer caracter es el id, el segundo.
+				//	alert(numeros[1]+" -- "+$('#'+clave).val());
+					if (numeros[1] == $('#'+clave).val()) //Verifica que solo vacíe los datos pertenecientes a la opción seleccionada en el select victima.
+					{
+						$(victima).append("<option value = '"+numeros[0]+"'>"+listado[conection[clave]][lista[j]]+"</option>"); //Añade un option al select victima.
+					}
+				}
+	}
+	
+/*
+
+Creando un objeto listas, se pueden enlazar una cantidad X de selects de manera que lo que se seleccione en uno afecte a otro.
+
+Ejemplo de aplicación:
+
+var explorador = new listas({
+		"planeta" : "satelite"
+	}, {
+		"planeta" : {
+			  "1-1" : "Tierra",
+			  "2-1" : "Marte",
+			  "3-1" : "Saturno"
+		},
+		"satelite" : {
+			"1-1": "Luna",
+			"2-2": "Phobos",
+			"3-2": "Deimos",
+			"4-3": "Titan",
+			"5-3": "Encélado",
+			"6-3": "Jápeto"
+		}
+		
+	}, "explorador"); //Crea un nuevo objeto listas, llamado explorador, conectando con él los selects de id "planeta" y "luna".
+
+
+*/
+
+
